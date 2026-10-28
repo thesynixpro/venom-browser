@@ -62,3 +62,22 @@ This project is built for demonstration purposes.
 - SSL certificate errors are not automatically bypassed
 - JavaScript bridges are restricted
 - External intents are validated
+
+## Continuous Integration
+
+`.github/workflows/build-apk.yml` builds the debug APK on every push to `main`/`master` and on pull requests:
+
+1. JDK 17 (Temurin) + Gradle 8.9 wrapper
+2. `./gradlew assembleDebug`
+3. Unit tests (if present)
+4. Uploads `venom-browser-debug-apk` as a workflow artifact (30-day retention)
+
+Repository: https://github.com/thesynixpro/venom-browser
+
+Download the latest APK from the Actions tab, or from the local `artifacts/app-debug.apk` copy.
+
+## Status / Limitations
+
+- Implemented: home screen, address/search bar, WebView navigation, back/forward/reload, progress, multi-tab state, Venom Button with drag + action panel, dark theme.
+- Not yet implemented: bookmarks/history/downloads persistence screens, settings screens, private mode, find-in-page, tab switcher UI, DataStore wiring.
+- The single WebView instance is reused across tabs; per-tab back/forward history is not preserved yet.
