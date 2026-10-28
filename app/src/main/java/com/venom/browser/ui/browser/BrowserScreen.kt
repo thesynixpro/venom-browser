@@ -119,7 +119,7 @@ fun BrowserScreen(viewModel: BrowserViewModel = viewModel()) {
             // Progress indicator
             if (activeTab?.isLoading == true) {
                 LinearProgressIndicator(
-                    progress = { (activeTab.progress / 100f).coerceIn(0f, 1f) },
+                    progress = { ((activeTab?.progress ?: 0) / 100f).coerceIn(0f, 1f) },
                     modifier = Modifier.fillMaxWidth(),
                     color = VenomGreen,
                     trackColor = Surface
@@ -143,7 +143,7 @@ fun BrowserScreen(viewModel: BrowserViewModel = viewModel()) {
                                     override fun onPageStarted(view: WebView?, url: String?, favicon: android.graphics.Bitmap?) {
                                         super.onPageStarted(view, url, favicon)
                                         viewModel.updateTab(activeTabId) { tab ->
-                                            tab.copy(isLoading = true, url = url ?: tab.url, title = view.title ?: tab.title)
+                                            tab.copy(isLoading = true, url = url ?: tab.url, title = view?.title ?: tab.title)
                                         }
                                         viewModel.setAddressBarText(url ?: "")
                                     }
@@ -175,13 +175,14 @@ fun BrowserScreen(viewModel: BrowserViewModel = viewModel()) {
                                 settings.builtInZoomControls = true
                                 settings.displayZoomControls = false
                                 settings.mixedContentMode = WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE
-                                loadUrl(activeTab.url)
+                                activeTab?.url?.let { loadUrl(it) }
                                 webView = this
                             }
                         },
                         update = { view ->
-                            if (view.url != activeTab.url && activeTab.url != "about:home") {
-                                view.loadUrl(activeTab.url)
+                            val target = activeTab?.url
+                            if (target != null && target != "about:home" && view.url != target) {
+                                view.loadUrl(target)
                             }
                         },
                         modifier = Modifier.fillMaxSize()
